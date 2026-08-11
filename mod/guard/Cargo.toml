@@ -1,0 +1,68 @@
+# SPDX-FileCopyrightText: 2026 Dawid Papiewski "SpacingBat3" <spacingbat3@gmail.com>
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+### METADATA ###
+
+[ package ]
+name                 = "ng_rs-guard"
+description          = "Solves proof-of-work (PoW) for Newgrounds guard. (WIP)"
+version.workspace    = true
+license.workspace    = true
+categories           = ["api-bindings", "authentication", "network-programming"]
+repository.workspace = true
+homepage.workspace   = true
+edition.workspace    = true
+publish.workspace    = true
+
+[ features ]
+default        = ["default-crypto"]
+default-async  = ["smol-rt"]
+default-crypto = ["rustcrypto"]
+
+# Crypro providers
+rustcrypto     = ["dep:argon2", "dep:base64ct"]
+openssl        = ["dep:openssl"]
+
+# Async runtimes
+smol-rt        = ["dep:smol", "dep:async-compat"]
+tokio-rt       = ["dep:tokio"]
+
+# "Demo" API – testing library performance
+example-demo   = []
+
+### EXAMPLES ###
+
+[[ example ]]
+name = "pow-example"
+
+[[ example ]]
+name              = "infinite-solve"
+bench             = false
+required-features = ["example-demo", "openssl"]
+
+### DEPENDENCIES ###
+
+[ dependencies ]
+
+ng_rs-common.workspace = true
+# HTTP Client
+reqwest.workspace      = true
+url.workspace          = true
+# Data de/-serialization
+serde.workspace        = true
+serde_json.workspace   = true
+# Crypto
+openssl  = { workspace = true, optional = true }
+argon2   = { workspace = true, optional = true }
+base64ct = { workspace = true, optional = true }
+# FFI
+libc     = { workspace = true, optional = true }
+
+### Native targets ###
+[ target.'cfg(not(target_family = "wasm"))'.dependencies ]
+
+# Async runtime
+smol         = { workspace = true, optional = true }
+async-compat = { workspace = true, optional = true }
+tokio        = { workspace = true, optional = true }

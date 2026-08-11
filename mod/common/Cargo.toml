@@ -1,0 +1,22 @@
+# SPDX-FileCopyrightText: 2026 Dawid Papiewski "SpacingBat3" <spacingbat3@gmail.com>
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+[package]
+name                 = "ng_rs-common"
+description          = "Shared Newgrounds API definitions and traits"
+version.workspace    = true
+license.workspace    = true
+categories.workspace = true
+repository.workspace = true
+homepage.workspace   = true
+edition.workspace    = true
+publish.workspace    = true
+[features]
+default = ["default-http-client"]
+default-http-client = ["reqwest"]
+reqwest = ["dep:reqwest", "dep:url"]
+
+[dependencies]
+url     = { workspace = true, optional = true }
+reqwest = { workspace = true, optional = true }

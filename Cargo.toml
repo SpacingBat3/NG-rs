@@ -1,0 +1,74 @@
+# SPDX-FileCopyrightText: 2026 Dawid Papiewski "SpacingBat3" <spacingbat3@gmail.com>
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+[ profile.release ]
+lto   = "fat"
+strip = true
+panic = "abort"
+
+[ workspace ]
+resolver = "3"
+members = [
+    "mod/lib",        # ng_rs
+    "mod/aud",        # ng_rs-aud
+    "mod/common",     # ng_rs-common
+    "mod/cli/player", # ngplayer-cli
+    "mod/guard"       # ng_rs-guard
+]
+default-members = ["mod/lib"]
+
+[workspace.package]
+version    = "0.1.0+continuous"
+license    = "GPL-3.0-or-later"
+categories = ["api-bindings", "network-programming"]
+homepage   = "https://github.com/SpacingBat3/NG-rs#readme"
+repository = "https://github.com/SpacingBat3/NG-rs"
+edition    = "2024"
+publish    = false
+
+[workspace.dependencies]
+### INTERNAL
+# Complete unified library
+ng_rs        = { path = "mod/lib" }
+# Common types for module co-operation
+ng_rs-common = { path = "mod/common" }
+# Fetch & list audio files
+ng_rs-aud    = { path = "mod/aud" }
+# Proof-of-work implementation
+ng_rs-guard  = { path = "mod/guard" }
+
+### EXTERNAL
+# HTTP Client
+reqwest = {
+    version = "0.13",
+    features = [
+        "gzip",
+        "json"
+    ]
+}
+# DOM parsing
+scraper = "0.27"
+# Data <-> Struct Serialization/Deserialization
+serde = {
+    version = "1",
+    features = ["derive"],
+}
+serde_json = "1"
+# Data representations
+url = "2"
+# Cryptography providers
+openssl = "0.10"
+argon2  = "0.5"
+base64ct = "1"
+# Async runtime
+tokio = {
+    version = "1",
+    features = ["full"]
+}
+smol = "2"
+async-compat   = "0.2"
+# FFI
+libc = "0.2"
+wasm-bindgen = "0.2"
+wasm-bindgen-futures = "0.4"
