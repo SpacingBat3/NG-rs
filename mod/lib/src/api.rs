@@ -1,5 +1,5 @@
 pub use ng_rs_common::types::Context as Ctx;
 #[cfg(feature = "aud")]
 pub use ng_rs_aud::api::MusicApi as Music;
-#[cfg(feature = "guard_unstable")]
+#[cfg(feature = "guard")]
 pub use ng_rs_guard::api::GuardApi as Guard;

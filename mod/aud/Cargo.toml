@@ -13,8 +13,13 @@ repository.workspace = true
 edition.workspace    = true
 publish.workspace    = true
 
+[features]
+default = ["guard"]
+guard = ["dep:ng_rs-guard"]
+
 [dependencies]
 ng_rs-common.workspace = true
+ng_rs-guard = { workspace = true, optional = true }
 # HTML deserialization
 scraper.workspace = true
 # HTTP Client

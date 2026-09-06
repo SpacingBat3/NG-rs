@@ -14,9 +14,9 @@ edition.workspace    = true
 publish.workspace    = true
 
 [features]
-default = ["aud"]
-aud = ["dep:ng_rs-aud"]
-guard_unstable = ["dep:ng_rs-guard"]
+default = ["aud","guard"]
+aud     = ["dep:ng_rs-aud"]
+guard   = ["dep:ng_rs-guard"]
 
 [dependencies]
 ng_rs-common.workspace = true

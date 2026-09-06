@@ -43,5 +43,5 @@ pub mod api;
 pub use ng_rs_common as common;
 #[cfg(feature = "aud")]
 pub use ng_rs_aud as aud;
-#[cfg(feature = "guard_unstable")]
+#[cfg(feature = "guard")]
 pub use ng_rs_guard as guard;

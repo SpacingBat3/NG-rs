@@ -16,15 +16,20 @@ impl<'p> MusicApi<'p> {
             .unwrap();
         url.set_query(Some(format!("offset={}",offset).as_str()));
         let req = self.ctx.session.get(url)
-            .header(header::ACCEPT, "text/html")
-            .send();
+            .header(header::ACCEPT, "text/html");
+        let res = cfg_select! {
+            feature = "guard" => ng_rs_guard::api::GuardApi
+                ::req_send_guard(&self.ctx,req),
+            _ => req.send()
+        };
+        
         let [root,title,author] = {
             use selectors::*;
             let [root,title,author] = [ROOT_AUD,TITLE_AUD,AUTHOR_AUD]
                 .map(|s| Selector::parse(s).unwrap()); // FIXME
             [root,title,author]
         };
-        let html = Html::parse_document(req
+        let html = Html::parse_document(res
             .await.expect("Audio listing failed on request")
             .text()
             .await.expect("Audio listing failed on body parse")

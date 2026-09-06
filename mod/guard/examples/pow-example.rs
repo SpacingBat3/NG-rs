@@ -31,7 +31,6 @@ async fn pow_example() {
     println!("--- {:?}", verify);
 
     println!("\n==> Success for PoW API!");
-    println!("--- Note: tokens still need to need validated. (not yet supported)\n")
 }
 
 cfg_select! {

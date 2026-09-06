@@ -23,8 +23,12 @@ impl<'p> MusicApi<'p> {
         let mus_path = format!("listen/{}",id);
         let endpoint = self.route(mus_path.as_str());
         let req = self.ctx.session.get(endpoint)
-            .header(header::ACCEPT, "text/html")
-            .send();
+            .header(header::ACCEPT, "text/html");
+        let res = cfg_select! {
+            feature = "guard" => ng_rs_guard::api::GuardApi
+                ::req_send_guard(&self.ctx,req),
+            _ => req.send()
+        };
         let [head_select, meta_select] = {
             use selectors::*;
             let [s1, s2] = [GENERIC_HEAD, META]
@@ -35,7 +39,7 @@ impl<'p> MusicApi<'p> {
         };
         let mut builder = AudioDetails::builder();
         let html = Html::parse_document(
-            req.await?.text().await?.as_str()
+            res.await?.text().await?.as_str()
         );
         for element in html
                 .select(&head_select)
