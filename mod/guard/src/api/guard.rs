@@ -15,7 +15,7 @@ use ng_rs_common::prelude::*;
 
 use ng_rs_common::{
     traits::Router,
-    types::ApiCtx
+    types::Context
 };
 
 use reqwest::{RequestBuilder, Response, StatusCode, Url, header};
@@ -23,7 +23,7 @@ use reqwest::{RequestBuilder, Response, StatusCode, Url, header};
 //  API resolver
 
 impl<'p> Router for Api<'p> {
-    type  RouterRoot = ApiCtx;
+    type  RouterRoot = Context;
     const ROUTER_PATH:&'static str = "/_guard/api/";
     fn get_route(&self, endpoint: &str) -> Result<Url,url::ParseError> {
         Url::parse(self.ctx.get_origin())
@@ -37,7 +37,7 @@ impl<'p> Router for Api<'p> {
 
 impl<'p> Api<'p> {
     /// Captures request and handles `send` with NG Guard detection.
-    pub async fn req_send_guard(ctx: &'p ApiCtx,req:RequestBuilder)->reqwest::Result<Response> {
+    pub async fn req_send_guard(ctx: &'p Context,req:RequestBuilder)->reqwest::Result<Response> {
         let res = req.try_clone().unwrap().send().await?;
         if res.status() == StatusCode::FORBIDDEN
                 && res.headers().get("content-encoding")

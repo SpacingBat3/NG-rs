@@ -62,7 +62,7 @@ cfg_select! {
             mod guard;
             
             pub use super::types::guard::Api as GuardApi;
-            pub use ng_rs_common::types::ApiCtx as GuardApiCtx;
+            pub use ng_rs_common::types::Context as GuardApiCtx;
         }
         pub mod types {
             pub(crate) mod version;

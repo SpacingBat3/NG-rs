@@ -4,7 +4,7 @@
 
 use std::borrow::Cow;
 use super::version::GuardApiVersion;
-use ng_rs_common::types::ApiCtx;
+use ng_rs_common::types::Context;
 
 /// Newgrounds Guard API, based on Proof-of-Work concept.
 ///
@@ -13,7 +13,7 @@ use ng_rs_common::types::ApiCtx;
 ///
 /// **Note:** Not yet a complete implementation!
 pub struct Api<'p> {
-    pub(crate) ctx: Cow<'p,ApiCtx>,
+    pub(crate) ctx: Cow<'p,Context>,
     pub(crate) version: GuardApiVersion,
 }
 
@@ -35,8 +35,8 @@ impl<'p> From<GuardApiVersion> for Api<'p> {
     }
 }
 
-impl<'p> From<&'p ApiCtx> for Api<'p> {
-    fn from(ctx: &'p ApiCtx) -> Self {
+impl<'p> From<&'p Context> for Api<'p> {
+    fn from(ctx: &'p Context) -> Self {
         Self {
             ctx: Cow::Borrowed(ctx),
             ..Default::default()
@@ -44,8 +44,8 @@ impl<'p> From<&'p ApiCtx> for Api<'p> {
     }
 }
 
-impl<'p> From<ApiCtx> for Api<'p> {
-    fn from(ctx: ApiCtx) -> Self {
+impl<'p> From<Context> for Api<'p> {
+    fn from(ctx: Context) -> Self {
         Self {
             ctx: Cow::Owned(ctx),
             ..Default::default()

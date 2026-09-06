@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-pub use ng_rs_common::types::ApiCtx as MusicApiCtx;
+pub use ng_rs_common::types::Context as MusicApiCtx;
 pub use crate::types::api::Api as MusicApi;
 
 use ng_rs_common::traits::Router;
