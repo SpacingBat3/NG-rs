@@ -36,6 +36,8 @@ pub mod types {
     pub use io::*;
 }
 
+mod macros;
+
 /// Shared traits definition
 pub mod traits;
 

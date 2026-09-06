@@ -60,23 +60,24 @@ cfg_select! {
         pub mod api {
             mod challenge;
             mod guard;
-            
+
             pub use super::types::guard::Api as GuardApi;
             pub use ng_rs_common::types::Context as GuardApiCtx;
         }
         pub mod types {
             pub(crate) mod version;
-            pub(crate) mod error;
             pub(crate) mod challenge;
             pub(crate) mod verify;
             pub(crate) mod guard;
-            
+
             pub use challenge::{
                 Challenge,
                 ChallengeSolverStopCond
             };
-
-            pub use error::ApiError;
+        }
+        pub mod error {
+            pub mod challenge;
+            pub mod guard;
         }
         pub mod config;
         #[cfg(feature = "example-demo")]

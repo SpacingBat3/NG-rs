@@ -7,14 +7,14 @@ use std::{
     thread
 };
 
-use crate::types::{
-    challenge::*,
-    error::*
+use crate::{
+    types::challenge::*,
+    error::challenge::*
 };
 
 impl Challenge {
     /// Checks if nonce fulfills the requirement
-    fn check_nonce(&self,nonce:usize) -> Result<u32,ApiError> {
+    fn check_nonce(&self,nonce:usize) -> Result<u32, ArgonHashError> {
         let task = String::from(self.task.payload.as_str())
             + ":"
             + nonce.to_string().as_str();
@@ -77,8 +77,12 @@ impl Challenge {
     /// Uses multiple threads based on parallelism of
     /// the current platform and falls back to single-threaded
     /// execution if MT is not supported.
-    pub fn solve(&self, cond: ChallengeSolverStopCond) -> Result<ChallengeSolution,ApiError> {
-        let thread_num = usize::from(thread::available_parallelism()?);
+    /// 
+    /// FIXME: implement as separate API, for more robust solver
+    /// definition.
+    pub fn solve(&self, cond: ChallengeSolverStopCond) -> Result<ChallengeSolution, NotFoundError> {
+        let thread_num = thread::available_parallelism()
+            .map(|t| t.get()).unwrap_or(1);
         let (max_iter, timeout) = match cond {
             ChallengeSolverStopCond::Iterations(iters) => (iters,None),
             ChallengeSolverStopCond::Timeout(timeout) => (usize::MAX,Some(timeout)),
@@ -131,6 +135,6 @@ impl Challenge {
                 Msg::Alive => {}
             }; cres = recv();}
         }
-        Err(ApiError::NotFound)
+        Err(NotFoundError)
     }
 }

@@ -6,12 +6,13 @@ use std::time::Duration;
 
 use crate::types::{
     challenge::*,
-    error::*,
-    verify::*,
-    guard::*
+    verify::*
 };
 
-use ng_rs_common::prelude::*;
+pub use crate::{
+    types::guard::Api,
+    error::guard::*
+};
 
 use ng_rs_common::{
     traits::Router,
@@ -58,7 +59,7 @@ impl<'p> Api<'p> {
 // API definitions
 
 impl<'p> Api<'p> {
-    async fn get_challenge_raw(&self) -> Result<ChallengeRaw,ApiError> {
+    async fn get_challenge_raw(&self) -> reqwest::Result<ChallengeRaw> {
         Ok(self.ctx.session
             .get(self.route("/challenge"))
             .header(header::ACCEPT, "aplication/json")
@@ -67,11 +68,11 @@ impl<'p> Api<'p> {
             .json::<ChallengeRaw>().await?)
     }
     /// Fetches new challenge to solve
-    pub async fn get_challenge(&self) -> Result<Challenge,ApiError> {
-        Challenge::try_from(self.get_challenge_raw().await?)
+    pub async fn get_challenge(&self) -> Result<Challenge, GetChallengeError> {
+        Ok(Challenge::try_from(self.get_challenge_raw().await?)?)
     }
     /// Verifies solution nonce
-    pub async fn verify_nonce(&self, challenge: Challenge, solution: ChallengeSolution) -> Result<VerifyResult,ApiError> {
+    pub async fn verify_nonce(&self, challenge: Challenge, solution: ChallengeSolution) -> reqwest::Result<VerifyResult> {
         Ok(self.ctx.session
             .post(self.route("/verify"))
             .header(header::CONTENT_TYPE, "application/json")

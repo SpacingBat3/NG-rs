@@ -4,7 +4,7 @@
 
 use std::{ops::BitOr, time::Duration};
 
-use super::error::ApiError;
+use crate::error::challenge::SerializeError;
 
 cfg_select! {
     feature = "rustcrypto" => {
@@ -117,7 +117,7 @@ impl<'a> Into<&'a str> for ChallengeAlgo {
 }
 
 impl TryFrom<ChallengeRaw> for Challenge {
-    type Error = ApiError;
+    type Error = SerializeError;
     fn try_from(value: ChallengeRaw) -> Result<Self,Self::Error> {
         let payload = { cfg_select! {
             feature = "rustcrypto" => String::from_utf8(
@@ -145,9 +145,11 @@ impl TryFrom<ChallengeRaw> for Challenge {
             "argon2id" => if let Some(ChallengeAlgo::Argon2Id(params)) = value.params {
                 Ok(ChallengeAlgo::Argon2Id(params))
             } else {
-                Err(ApiError::RequestTypeMismatch)
+                Err(SerializeError::SerializeError)
             }
-            _ => Err(ApiError::UnsupportedAlgo)
+            algo => Err(SerializeError::UnimplementedHash(
+                algo.to_string().into_boxed_str()
+            ))
         }?;
         return Ok(Challenge {
             task: ChallengeTask {
