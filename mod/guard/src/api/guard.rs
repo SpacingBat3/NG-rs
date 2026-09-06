@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use std::time::Duration;
+
 use crate::types::{
     challenge::*,
     error::*,
@@ -16,7 +18,7 @@ use ng_rs_common::{
     types::ApiCtx
 };
 
-use reqwest::{Response, StatusCode, Url, header};
+use reqwest::{RequestBuilder, Response, StatusCode, Url, header};
 
 //  API resolver
 
@@ -34,10 +36,23 @@ impl<'p> Router for Api<'p> {
 // API hooking
 
 impl<'p> Api<'p> {
-    pub fn guard_response_maybe(res:&Response)->bool {
-        res.status() == StatusCode::FORBIDDEN
-            && res.headers().get("content-encoding").is_some_and(|enc| enc == "gzip")
-            && res.content_length().is_some_and(|len| len == 344)
+    /// Captures request and handles `send` with NG Guard detection.
+    pub async fn req_send_guard(ctx: &'p ApiCtx,req:RequestBuilder)->reqwest::Result<Response> {
+        let res = req.try_clone().unwrap().send().await?;
+        if res.status() == StatusCode::FORBIDDEN
+                && res.headers().get("content-encoding")
+                    .is_some_and(|enc| enc == "gzip")
+                && res.content_length().is_some_and(|len| len == 344) {
+            
+            std::hint::cold_path();
+            let guard = Self::from(ctx);
+            let challenge = guard.get_challenge().await.unwrap();
+            let solution = challenge.solve(ChallengeSolverStopCond::Timeout(
+                Duration::from_secs(10)
+            )).unwrap();
+            let _ = guard.verify_nonce(challenge, solution).await.ok();
+            req.send().await
+        } else { Ok(res) }
     }
 }
 
