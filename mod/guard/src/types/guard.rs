@@ -29,8 +29,8 @@ impl<'p> Default for Api<'p> {
 impl<'p> From<GuardApiVersion> for Api<'p> {
     fn from(version: GuardApiVersion) -> Self {
         Self {
-            ctx: Default::default(),
             version,
+            ..Default::default()
         }
     }
 }
@@ -39,7 +39,7 @@ impl<'p> From<&'p ApiCtx> for Api<'p> {
     fn from(ctx: &'p ApiCtx) -> Self {
         Self {
             ctx: Cow::Borrowed(ctx),
-            version: Default::default(),
+            ..Default::default()
         }
     }
 }
@@ -48,7 +48,7 @@ impl<'p> From<ApiCtx> for Api<'p> {
     fn from(ctx: ApiCtx) -> Self {
         Self {
             ctx: Cow::Owned(ctx),
-            version: Default::default(),
+            ..Default::default()
         }
     }
 }
