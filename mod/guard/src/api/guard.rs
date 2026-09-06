@@ -18,18 +18,17 @@ use ng_rs_common::{
     types::Context
 };
 
-use reqwest::{RequestBuilder, Response, StatusCode, Url, header};
+use reqwest::{RequestBuilder, Response, StatusCode, header};
 
 //  API resolver
 
 impl<'p> Router for Api<'p> {
-    type  RouterRoot = Context;
-    const ROUTER_PATH:&'static str = "/_guard/api/";
-    fn get_route(&self, endpoint: &str) -> Result<Url,url::ParseError> {
-        Url::parse(self.ctx.get_origin())
-            ?.join(Self::ROUTER_PATH)
-            ?.join(self.version.into())
-            ?.join(endpoint)
+    #[inline] fn router_parent(&self)->Option<&impl Router> {
+        Some(self.ctx.as_ref())
+    }
+    #[inline] fn router_path(&self)->impl AsRef<str> {
+        let v:&str = self.version.into();
+        format!("/_guard/api/{v}")
     }
 }
 
@@ -61,7 +60,7 @@ impl<'p> Api<'p> {
 impl<'p> Api<'p> {
     async fn get_challenge_raw(&self) -> Result<ChallengeRaw,ApiError> {
         Ok(self.ctx.session
-            .get(self.get_route("/challenge")?)
+            .get(self.route("/challenge"))
             .header(header::ACCEPT, "aplication/json")
             .send().await?
             .error_for_status()?
@@ -74,7 +73,7 @@ impl<'p> Api<'p> {
     /// Verifies solution nonce
     pub async fn verify_nonce(&self, challenge: Challenge, solution: ChallengeSolution) -> Result<VerifyResult,ApiError> {
         Ok(self.ctx.session
-            .post(self.get_route("/verify")?)
+            .post(self.route("/verify"))
             .header(header::CONTENT_TYPE, "application/json")
             .json(&VerifyRequest {
                 challenge,

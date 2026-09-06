@@ -1,7 +1,6 @@
 
 use reqwest::{Client, ClientBuilder};
-
-use crate::traits::ApiRoot;
+use crate::traits::Router;
 
 /// # API context
 ///
@@ -16,9 +15,9 @@ pub struct Context {
     pub session: Client
 }
 
-// Constants
-impl ApiRoot for Context {
-    const ORIGIN:&'static str = "https://www.newgrounds.com";
+impl Router for Context {
+    #[inline] fn router_path(&self)->impl AsRef<str> { "https://www.newgrounds.com" }
+    #[inline] fn router_parent(&self)->Option<&impl Router> { Option::<&Self>::None }
 }
 
 impl Default for Context {

@@ -21,9 +21,7 @@ use super::*;
 impl<'p> MusicApi<'p> {
     pub async fn submission_get_details<'m>(&'m self, id: usize)->Result<AudioDetails,AudioDetailsFetchError<'m>> {
         let mus_path = format!("listen/{}",id);
-        let endpoint = self
-            .get_route(mus_path.as_str())
-            .expect("Failed to get API route");
+        let endpoint = self.route(mus_path.as_str());
         let req = self.ctx.session.get(endpoint)
             .header(header::ACCEPT, "text/html")
             .send();

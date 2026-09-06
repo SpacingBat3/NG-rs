@@ -2,32 +2,19 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use url::{Url,ParseError};
-
-/// Express that this structure is an API root, which
-/// defines common origin for the API.
-pub trait ApiRoot {
-    /// Common origin for API.
-    ///
-    /// Used by API routers as URL base when resolving.
-    const ORIGIN:&'static str;
-    /// Gets origin from this API router
-    #[inline] fn get_origin(&self)->&str { Self::ORIGIN }
-}
-
-/// Express that this structure is an API router, that
-/// resolves route to endpoints and (usually) operates
-/// on them.
+/// This is minimalistic runtime-driven path router, for defining
+/// relationship between each types when defining common route paths.
+/// FIXME: consider working on library for abstractions at
+/// compile time via const/macro.
 pub trait Router {
-    /// A root element type, from which this root originates.
-    type  RouterRoot:ApiRoot;
-    /// A path on which router operates.
-    const ROUTER_PATH:&'static str;
-    /// Gets route to relative "endpoint" path from this router.
-    fn get_route(&self, endpoint: &str) -> Result<Url,ParseError> {
-        Url::parse(Self::RouterRoot::ORIGIN)
-            ?.join((String::from(Self::ROUTER_PATH.trim_end_matches('/'))+"/").as_str())
-            ?.join(endpoint)
+    fn router_path(&self)->impl AsRef<str>;
+    fn router_parent(&self)->Option<&impl Router>;
+    #[inline] fn route(&self, endpoint:&str)->String {
+        let upper = if let Some(parent) = self.router_parent() {
+            parent.route(self.router_path().as_ref())
+        } else { self.router_path().as_ref().to_string() };
+        let endpoint = endpoint.trim_start_matches('/');
+        upper + "/" + endpoint
     }
 }
 

@@ -8,8 +8,8 @@ pub use crate::types::api::Api as MusicApi;
 use ng_rs_common::traits::Router;
 
 impl<'p> Router for MusicApi<'p> {
-    type  RouterRoot = MusicApiCtx;
-    const ROUTER_PATH:&'static str = "/audio";
+    #[inline] fn router_path(&self)->impl AsRef<str> {"/audio"}
+    #[inline] fn router_parent(&self)->Option<&impl Router> { Some(self.ctx.as_ref()) }
 }
 
 mod selectors;

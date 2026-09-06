@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use reqwest::header;
+use reqwest::{header,Url};
 use scraper::{Html,Selector};
 
 use super::*;
@@ -12,7 +12,8 @@ pub use crate::types::api::list::ListKind;
 impl<'p> MusicApi<'p> {
     // FIXME: category = enum { ... }
     pub async fn list_audio(&self, category:ListKind, offset:usize)->Box<[AudioList]> {
-        let mut url = self.get_route(category.into()).unwrap();
+        let mut url = Url::parse(self.route(category.into()).as_str())
+            .unwrap();
         url.set_query(Some(format!("offset={}",offset).as_str()));
         let req = self.ctx.session.get(url)
             .header(header::ACCEPT, "text/html")
