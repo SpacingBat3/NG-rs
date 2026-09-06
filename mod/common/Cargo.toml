@@ -12,11 +12,11 @@ repository.workspace = true
 homepage.workspace   = true
 edition.workspace    = true
 publish.workspace    = true
+
 [features]
-default = ["default-http-client"]
+default             = ["default-http-client"]
 default-http-client = ["reqwest"]
-reqwest = ["dep:reqwest", "dep:url"]
+reqwest             = ["dep:reqwest"]
 
 [dependencies]
-url     = { workspace = true, optional = true }
 reqwest = { workspace = true, optional = true }
