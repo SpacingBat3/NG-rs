@@ -27,6 +27,17 @@
 //! You should have received a copy of the GNU General Public License
 //! along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-pub mod types;
+/// Shared structures definition
+pub mod types {
+    mod api;
+    mod io;
+    
+    pub use api::*;
+    pub use io::*;
+}
+
+/// Shared traits definition
 pub mod traits;
+
+/// Prelude recommendations
 pub mod prelude;
