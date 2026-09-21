@@ -49,9 +49,9 @@ impl<'p> MusicApi<'p> {
             if let (Some(property),Some(content)) = (element.attr("property"),element.attr("content")) {
                 match property {
                     "og:title"        => {builder.set_title(content.into());},
-                    "og:description"  => {builder.set_description(content.to_string());},
-                    "og:image"        => {builder.set_image_src(content.to_string());},
-                    "og:image:alt"    => {builder.set_image_alt(content.to_string());},
+                    "og:description"  => {builder.set_description(content.into());},
+                    "og:image"        => {builder.set_image_src(content.into());},
+                    "og:image:alt"    => {builder.set_image_alt(content.into());},
                     "og:image:width"  => {builder.set_image_width(content.parse().unwrap());},
                     "og:image:height" => {builder.set_image_height(content.parse().unwrap());},
                     "og:image:type"   => {builder.set_image_mime(content.into());},
