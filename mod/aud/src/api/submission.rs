@@ -54,9 +54,8 @@ impl<'p> MusicApi<'p> {
                         builder.set_image_src(content
                             .to_string()
                             // Uncropped cover image
-                            .replace("_medium", "_cover")
-                            // High quality fallback images
-                            .replace("-smaller", "-xl"));
+                            .replace("_full.png", "_cover.webp")
+                            .replace("_full.", "_cover."));
                     },
                     "og:image:alt"    => {builder.set_image_alt(content.into());},
                     "og:image:width"  => {builder.set_image_width(content.parse().unwrap());},

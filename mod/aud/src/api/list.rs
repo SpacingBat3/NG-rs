@@ -22,7 +22,7 @@ impl<'p> MusicApi<'p> {
                 ::req_send_guard(&self.ctx,req),
             _ => req.send()
         };
-        
+
         let [root,title,author,cover,genre_opt] = {
             use selectors::*;
             let [root,title,author,cover,genre_opt] = [
@@ -53,9 +53,10 @@ impl<'p> MusicApi<'p> {
                 .next().expect("Cover not found")
                 .attr("src").unwrap().to_string()
                 // Uncropped cover image
-                .replace("_medium", "_cover")
+                .replace("_medium.png", "_cover.webp")
+                .replace("_medium.", "_cover.")
                 // High quality fallback images
-                .replace("-smaller", "-xl")
+                .replace("-smaller.png", "-xl.webp")
                 .into_boxed_str();
             let genre = root.select(&genre_opt)
                 .next().map(|el| el.inner_html().into_boxed_str());
