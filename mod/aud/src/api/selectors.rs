@@ -24,4 +24,4 @@ pub(super) const AUTHOR_AUD:&'static str = ".item-details .detail-title strong";
 /// Audio submission details: cover url
 pub(super) const COVER_AUD:&'static str  = ".item-icon img";
 /// Audio submission details: genre url
-pub(super) const GENRE_AUD_OPT:&'static str  = ".item-details-meta dl dd:nth-child(2)";
+pub(super) const GENRE_AUD_OPT:&'static str  = ".item-details-meta dl dd:nth-child(2):not(:last-child)";
