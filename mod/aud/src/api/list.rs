@@ -51,7 +51,7 @@ impl<'p> MusicApi<'p> {
                 .inner_html().into_boxed_str();
             let cover = root.select(&cover)
                 .next().expect("Cover not found")
-                .inner_html().into_boxed_str();
+                .attr("src").unwrap().to_string().into_boxed_str();
             let genre = root.select(&genre_opt)
                 .next().map(|el| el.inner_html().into_boxed_str());
             AudioList { id, title, author, cover, genre }
