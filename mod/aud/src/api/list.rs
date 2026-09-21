@@ -23,11 +23,14 @@ impl<'p> MusicApi<'p> {
             _ => req.send()
         };
         
-        let [root,title,author] = {
+        let [root,title,author,cover,genre_opt] = {
             use selectors::*;
-            let [root,title,author] = [ROOT_AUD,TITLE_AUD,AUTHOR_AUD]
-                .map(|s| Selector::parse(s).unwrap()); // FIXME
-            [root,title,author]
+            let [root,title,author,cover,genre_opt] = [
+                ROOT_AUD,
+                TITLE_AUD,AUTHOR_AUD,
+                COVER_AUD,GENRE_AUD_OPT
+            ].map(|s| Selector::parse(s).unwrap()); // FIXME
+            [root,title,author,cover,genre_opt]
         };
         let html = Html::parse_document(res
             .await.expect("Audio listing failed on request")
@@ -46,7 +49,12 @@ impl<'p> MusicApi<'p> {
             let author = root.select(&author)
                 .next().expect("Author not found")
                 .inner_html().into_boxed_str();
-            AudioList { id, title, author }
+            let cover = root.select(&cover)
+                .next().expect("Cover not found")
+                .inner_html().into_boxed_str();
+            let genre = root.select(&genre_opt)
+                .next().map(|el| el.inner_html().into_boxed_str());
+            AudioList { id, title, author, cover, genre }
         }).collect()
     }
 }

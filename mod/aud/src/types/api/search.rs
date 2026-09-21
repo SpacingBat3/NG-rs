@@ -8,5 +8,6 @@ pub struct AudioSearch {
     pub id:     usize,
     pub title:  Box<str>,
     pub author: Box<str>,
-    // image:  Option<!>
+    pub cover:  Box<str>,
+    pub genre:  Option<Box<str>>,
 }
