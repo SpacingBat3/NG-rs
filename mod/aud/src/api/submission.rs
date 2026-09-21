@@ -50,7 +50,14 @@ impl<'p> MusicApi<'p> {
                 match property {
                     "og:title"        => {builder.set_title(content.into());},
                     "og:description"  => {builder.set_description(content.into());},
-                    "og:image"        => {builder.set_image_src(content.into());},
+                    "og:image"        => {
+                        builder.set_image_src(content
+                            .to_string()
+                            // Uncropped cover image
+                            .replace("_medium", "_cover")
+                            // High quality fallback images
+                            .replace("-smaller", "-xl"));
+                    },
                     "og:image:alt"    => {builder.set_image_alt(content.into());},
                     "og:image:width"  => {builder.set_image_width(content.parse().unwrap());},
                     "og:image:height" => {builder.set_image_height(content.parse().unwrap());},
